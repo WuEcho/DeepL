@@ -16,10 +16,10 @@
 
 ### 2.深度学习环境配置
 
-- `anaconda`创建虚拟环境：[env-conda创建管理虚拟环境](./1.准备工作/2.深度学习环境配置/2.1 anaconda创建虚拟环境.md)
-- `Pycharm`中配置`conda`环境：[env-pycharm中配置conda环境](./1.准备工作/2.深度学习环境配置/2.2 pycharm中配置conda.md)
-- `Pytorch`安装：[env-pytorch安装](./1.准备工作/2.深度学习环境配置/2.3 pytorch安装.md)
-- `Gensim`安装：[env-gensim安装](./1.准备工作/2.深度学习环境配置/2.4 gensim安装.md)
+- `anaconda`创建虚拟环境：[env-conda创建管理虚拟环境](./1.准备工作/2.深度学习环境配置/2.1.anaconda创建虚拟环境.md)
+- `Pycharm`中配置`conda`环境：[env-pycharm中配置conda环境](./1.准备工作/2.深度学习环境配置/2.2.pycharm中配置conda.md)
+- `Pytorch`安装：[env-pytorch安装](./1.准备工作/2.深度学习环境配置/2.3.pytorch安装.md)
+- `Gensim`安装：[env-gensim安装](./1.准备工作/2.深度学习环境配置/2.4.gensim安装.md)
 - `Numpy`安装：安装完`pytorch`和`gensim`，`numpy`已经被当作依赖安装完成
 - `Scikit-learn`安装：
     - 打开`cmd`，进入到对应py虚拟环境：`conda activate env_name`
