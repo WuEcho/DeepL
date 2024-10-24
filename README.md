@@ -52,3 +52,12 @@
 
 ## 2.Python
 
+### 1.python初识
+[初步了解python](./2.Python/0.入门/hello_python.md)
+
+### 2.python的数据结构
+[数据结构上](./2.Python/1.数据结构/数据结构.md)
+
+### 3.小练习
+[小练习部分](./2.Python/1.1小练习/练习.md)
+
