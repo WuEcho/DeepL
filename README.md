@@ -33,7 +33,7 @@
     - 打开`cmd`，进入到对应`py`虚拟环境：`conda activate env_name`
     - 输入：`pip install peft==0.2.0 -i https://pypi.tuna.tsinghua.edu.cn/simple` 
     - 等待安装完成即可
-
+- `jupyterNoteBook`安装：[jupyterNoteBook安装](./1.Preparations/2.深度学习环境配置/2.5.jupyterNoteBook安装.md) 
 
 ### 3.预习资料推荐
 
