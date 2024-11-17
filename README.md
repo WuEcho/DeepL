@@ -49,6 +49,10 @@
     - [机器学习：西瓜书~周志华](./1.Preparations/4.books/西瓜书.pdf)
     - 公式解释：[南瓜书](./1.Preparations/4.books/南瓜书.pdf)、[统计学习方法~李航](./1.Preparations/4.books)
 
+### 5.其它学习资料
+
+- [Build a Large Language Model(From Scratch)](https://github.com/rasbt/LLMs-from-scratch)
+- [LLM-Action](https://github.com/liguodongiot/llm-action)
 
 ## 2.Python
 
