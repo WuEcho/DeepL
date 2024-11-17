@@ -54,7 +54,7 @@
 - [Build a Large Language Model(From Scratch)](https://github.com/rasbt/LLMs-from-scratch)
 - [LLM-Action](https://github.com/liguodongiot/llm-action)
 
-## 2.Python
+## 2. Python
 
 #### 1.python初识
 [初步了解python](./2.Python/0.入门/hello_python.md)
@@ -73,5 +73,16 @@
 
 #### 6.小练习
 [小练习部分2](./2.Python/2.1小练习/练习.md)
+
+
+## 3.机器学习
+
+### 3.1 基本简介
+
+#### 3.1.1 机器学习简介
+[机器学习简介](./3.MachineLearning/0.机器学习简介/机器学习简介.md)
+
+#### 3.1.2 
+[深度学习简介](./3.MachineLearning/1.深度学习简介/深度学习简介.md)
 
 
