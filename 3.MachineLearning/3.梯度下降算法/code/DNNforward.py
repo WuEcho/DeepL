@@ -21,7 +21,7 @@ class TorchModel(nn.Module):
         y_pred = self.layer2(hidden) #shape: (batch_size, hidden_size1) -> (batch_size, hidden_size2)
         return y_pred
 
-#自定义模型
+#自定义模型 对应的是TorchModel中nn.Linear的运行过程
 class DiyModel:
     def __init__(self, w1, b1, w2, b2):
         self.w1 = w1
@@ -39,8 +39,8 @@ class DiyModel:
 #随便准备一个网络输入
 x = np.array([34.1, 0.3, 1.2])
 #建立torch模型
-torch_model = TorchModel(len(x), 5, 2)
-print(torch_model.state_dict())
+torch_model = TorchModel(len(x), 5, 2) #模型在初始化时，权重是随机初始化的
+print(torch_model.state_dict()) #打印模型权重
 print("-----------")
 #打印模型权重，权重为随机初始化
 torch_model_w1 = torch_model.state_dict()["layer1.weight"].numpy()
