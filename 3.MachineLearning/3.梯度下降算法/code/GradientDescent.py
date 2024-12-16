@@ -1,4 +1,4 @@
-import matplotlib.pyplot as pyplot # type: ignore
+import matplotlib.pyplot as pyplot
 import math
 
 # X = [0.01 * i for i in range(100)]
