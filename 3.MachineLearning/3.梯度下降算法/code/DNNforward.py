@@ -30,7 +30,9 @@ class DiyModel:
         self.b2 = b2
 
     def forward(self, x):
-        hidden = np.dot(x, self.w1.T) + self.b1
+        #这里x要乘以w1的转置，因为w1是权重矩阵形状为【hidden_size,input_size】
+        #x的形状为【batch_size,input_size】所以需要将W转置
+        hidden = np.dot(x, self.w1.T) + self.b1 
         y_pred = np.dot(hidden, self.w2.T) + self.b2
         return y_pred
 
@@ -55,7 +57,7 @@ print(torch_model_b2, "torch b2 权重")
 print("-----------")
 #使用torch模型做预测
 torch_x = torch.FloatTensor([x])
-y_pred = torch_model.forward(torch_x)
+y_pred = torch_model.forward(torch_x) 
 print("torch模型预测结果：", y_pred)
 
 
