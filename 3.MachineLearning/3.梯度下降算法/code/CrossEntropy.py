@@ -14,6 +14,9 @@ pred = torch.FloatTensor([[0.3, 0.1, 0.3],
                           [0.5, 0.4, 0.2]])
 #正确的类别分别为1,2,0
 target = torch.LongTensor([1, 2, 0])
+#这里是longTensor是因为在 nn.CrossEntropyLoss 中，真实类别标签（target）需要满足以下条件：
+#类型：必须是整型张量（torch.int64 或 torch.LongTensor）。
+#值的范围：必须是 0 到 C-1（类别总数减一）。
 loss = ce_loss(pred, target)
 print(loss, "torch输出交叉熵")
 
@@ -28,6 +31,12 @@ def softmax(matrix):
 
 
 #将输入转化为onehot矩阵
+#to_one_hot 是一种将类别标签转换为独热编码（one-hot encoding）的操作。
+#类别标签：通常是一个索引，例如 [1, 2, 0]，其中每个值表示类别索引。
+#独热编码：将类别标签转为向量形式，例如：
+#类别 1 转为 [0, 1, 0]
+#类别 2 转为 [0, 0, 1]
+#类别 0 转为 [1, 0, 0]
 def to_one_hot(target, shape):
     one_hot_target = np.zeros(shape)
     for i, t in enumerate(target):

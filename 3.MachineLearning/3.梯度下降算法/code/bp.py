@@ -22,7 +22,7 @@ class TorchModel(nn.Module):
     def forward(self, x, y=None):
         y_pred = self.layer(x)
         y_pred = self.activation(y_pred)
-        if y is not None:
+        if y is not None:  #如果y不为空，则计算loss
             return self.loss(y_pred, y)
         else:
             return y_pred
