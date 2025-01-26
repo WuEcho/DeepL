@@ -14,7 +14,9 @@ import numpy as np
 #一个二维卷积
 class TorchCNN(nn.Module):
     def __init__(self, in_channel, out_channel, kernel):
+        # 初始化函数，传入输入通道数(图像专有概念)、输出通道数和卷积核大小
         super(TorchCNN, self).__init__()
+        # 调用父类的初始化函数
         self.layer = nn.Conv2d(in_channel, out_channel, kernel, bias=False)
 
     def forward(self, x):
@@ -27,7 +29,7 @@ class DiyModel:
         self.width = input_width
         self.weights = weights
         self.kernel_size = kernel_size
-
+   
     def forward(self, x):
         output = []
         for kernel_weight in self.weights:

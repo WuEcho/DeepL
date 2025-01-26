@@ -15,6 +15,7 @@ import numpy as np
 class TorchRNN(nn.Module):
     def __init__(self, input_size, hidden_size):
         super(TorchRNN, self).__init__()
+        ##定义一个RNN层  input_size:输入维度  hidden_size:隐藏层维度 bias:是否使用偏置 batch_first:是否输入数据的第一维是batch_size(一般建议设置为True) 
         self.layer = nn.RNN(input_size, hidden_size, bias=False, batch_first=True)
 
     def forward(self, x):
