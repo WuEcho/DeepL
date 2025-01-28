@@ -25,7 +25,7 @@ def cut_method1(string, word_dict, max_len):
         while word not in word_dict:
             if len(word) == 1:
                 break
-            word = word[:len(word) - 1]
+            word = word[:len(word) - 1] 
         words.append(word)
         string = string[len(word):]
     return words
@@ -34,6 +34,7 @@ def cut_method1(string, word_dict, max_len):
 #output_path是输出路径
 def main(cut_method, input_path, output_path):
     word_dict, max_word_length = load_word_dict("dict.txt")
+    #打开文件 "w"是写入模式，"utf8"是编码格式
     writer = open(output_path, "w", encoding="utf8")
     start_time = time.time()
     with open(input_path, encoding="utf8") as f:

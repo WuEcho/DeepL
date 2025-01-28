@@ -15,16 +15,21 @@ from torch.utils.data import DataLoader
 """
 
 class TorchModel(nn.Module):
+    #input_dim:输入维度，hidden_size:隐藏层维度，num_rnn_layers:RNN层数，vocab:字表
     def __init__(self, input_dim, hidden_size, num_rnn_layers, vocab):
         super(TorchModel, self).__init__()
+        #embedding层，将输入的词汇转换为向量表示，padding_idx=0表示忽略索引为0的词汇
         self.embedding = nn.Embedding(len(vocab) + 1, input_dim, padding_idx=0) #shape=(vocab_size, dim)
+        #embedding层，将输入的词汇转换为向量表示，padding_idx=0表示忽略索引为0的词汇
         self.rnn_layer = nn.RNN(input_size=input_dim,
                             hidden_size=hidden_size,
                             batch_first=True,
                             num_layers=num_rnn_layers,
-                            )
+                            ) #RNN层，输入维度为input_dim，隐藏层维度为hidden_size，batch_first=True表示输入数据的第一个维度为batch_size，num_layers表示RNN的层数
+        #全连接层，将RNN的输出映射到2个类别上，hidden_size表示RNN的隐藏层维度，2表示输出2个类别
         self.classify = nn.Linear(hidden_size, 2)  # w = hidden_size * 2
-        self.loss_func = nn.CrossEntropyLoss(ignore_index=-100)
+        #ignore_index=-100 代表忽略-100的标签，不计算loss 配合embedding的padding_idx=0
+        self.loss_func = nn.CrossEntropyLoss(ignore_index=-100) 
 
     #当输入真实标签，返回loss值；无真实标签，返回预测值
     def forward(self, x, y=None):
@@ -33,13 +38,16 @@ class TorchModel(nn.Module):
         y_pred = self.classify(x)   #output shape:(batch_size, sen_len, 2) -> y_pred.view(-1, 2) (batch_size*sen_len, 2)
         if y is not None:
             #cross entropy
-            #y_pred : n, class_num    [[1,2,3], [3,2,1]]
-            #y      : n               [0,       1      ]
+            #y_pred : n, class_num    [[1,2], [2,1]]
+            #y      : n               [0,       1  ]
 
             #y:batch_size, sen_len  = 2 * 5
             #[[0,0,1,0,1],[0,1,0, -100, -100]]  y
             #[0,0,1,0,1,  0,1,0,-100.-100]    y.view(-1) shape= n = batch_size*sen_len
           
+            #view(-1, 2)  -1代表自动计算，这里是batch_size*sen_len
+            #y_pred.reshape(-1, 2) 将预测值展平，形状变为 (batch_size * sentence_length, 2)。
+            #y.view(-1)：将真实标签展平，形状变为 (batch_size * sentence_length)。
             return self.loss_func(y_pred.reshape(-1, 2), y.view(-1))
         else:
             return y_pred
@@ -59,7 +67,7 @@ class Dataset:
                 label = sequence_to_label(line)
                 sequence, label = self.padding(sequence, label)
                 sequence = torch.LongTensor(sequence)
-                label = torch.LongTensor(label)
+                label = torch.LongTensor(label) 
                 self.data.append([sequence, label])
                 #使用部分数据做展示，使用全部数据训练时间会相应变长
                 if len(self.data) > 10000:
@@ -74,9 +82,11 @@ class Dataset:
         return sequence, label
 
     def __len__(self):
+        # 返回self.data的长度
         return len(self.data)
 
     def __getitem__(self, item):
+        # 返回self.data中索引为item的元素
         return self.data[item]
 
 #文本转化为数字序列，为embedding做准备
@@ -106,8 +116,11 @@ def build_vocab(vocab_path):
 
 #建立数据集
 def build_dataset(corpus_path, vocab, max_length, batch_size):
+    # 创建一个Dataset对象，用于加载语料库，vocab为词汇表，max_length为最大长度
     dataset = Dataset(corpus_path, vocab, max_length) #diy __len__ __getitem__
+    # 创建一个DataLoader对象，用于将Dataset对象中的数据加载到内存中，shuffle为是否打乱数据，batch_size为每个batch的大小
     data_loader = DataLoader(dataset, shuffle=True, batch_size=batch_size) #torch
+    # 返回DataLoader对象
     return data_loader
 
 
