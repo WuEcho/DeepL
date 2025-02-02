@@ -20,14 +20,23 @@ def load_data(file_path):
         tf_idf_dict = calculate_tfidf(corpus)
     return tf_idf_dict, corpus
 
+# 定义一个搜索引擎函数，参数为查询词、tf-idf字典、语料库和返回结果数量
 def search_engine(query, tf_idf_dict, corpus, top=3):
+    # 使用jieba分词对查询词进行分词
     query_words = jieba.lcut(query)
+    # 初始化结果列表
     res = []
+    # 遍历tf-idf字典中的每个文档
     for doc_id, tf_idf in tf_idf_dict.items():
+        # 初始化分数
         score = 0
+        # 遍历查询词中的每个词
         for word in query_words:
+            # 将查询词在文档中的tf-idf值累加到分数中
             score += tf_idf.get(word, 0)
+        # 将文档id和分数添加到结果列表中
         res.append([doc_id, score])
+    # 按照分数从高到低对结果列表进行排序
     res = sorted(res, reverse=True, key=lambda x:x[1])
     for i in range(top):
         doc_id = res[i][0]

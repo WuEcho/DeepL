@@ -77,7 +77,7 @@ class NewWordDetect:
         for word in self.pmi:
             if len(word) < 2 or "，" in word:
                 continue
-            pmi = self.pmi.get(word, 1e-3)
+            pmi = self.pmi.get(word, 1e-3)  
             le = self.word_left_entropy.get(word, 1e-3)
             re = self.word_right_entropy.get(word, 1e-3)
             self.word_values[word] = pmi * min(le, re)
