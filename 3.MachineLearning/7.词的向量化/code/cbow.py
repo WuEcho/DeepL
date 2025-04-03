@@ -13,9 +13,9 @@ import numpy as np
 class CBOW(nn.Module):
     def __init__(self, vocab_size, embedding_size, window_length):
         super(CBOW, self).__init__()
-        self.word_vectors = nn.Embedding(vocab_size, embedding_size)
-        self.pooling = nn.AvgPool1d(window_length)
-        self.projection_layer = nn.Linear(embedding_size, vocab_size)
+        self.word_vectors = nn.Embedding(vocab_size, embedding_size)  #定义词向量层
+        self.pooling = nn.AvgPool1d(window_length)  #定义池化层
+        self.projection_layer = nn.Linear(embedding_size, vocab_size)  #定义投影层
 
     def forward(self, context):
         context_embedding = self.word_vectors(context)  #batch_size * max_length * embedding size  1*4*4

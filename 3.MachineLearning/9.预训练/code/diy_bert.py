@@ -10,11 +10,13 @@ from transformers import BertModel
 
 '''
 
-bert = BertModel.from_pretrained(r"F:\Desktop\work_space\pretrain_models\bert-base-chinese", return_dict=False)
+#将bert-base-chinese.zip解压后的文件夹放在自定义目录文件夹下，然后通过以下代码加载预训练权重
+bert = BertModel.from_pretrained(r"xxxxxx(自定义下载路径)\bert-base-chinese", return_dict=False)
 state_dict = bert.state_dict()
 bert.eval()
-x = np.array([2450, 15486, 102, 2110])   #假想成4个字的句子
+x = np.array([2450, 15486, 102, 2110])   #假想成4个字的句子，对应bert词表里的索引
 torch_x = torch.LongTensor([x])          #pytorch形式输入
+## seqence_output 经过bert的embedding层和transformer层的输出，pooler_output是cls token通过线性层输出的向量值结果，一般用来代表整句话的向量
 seqence_output, pooler_output = bert(torch_x)
 print(seqence_output.shape, pooler_output.shape)
 # print(seqence_output, pooler_output)
@@ -47,11 +49,11 @@ class DiyBert:
         self.transformer_weights = []
         #transformer部分，有多层
         for i in range(self.num_layers):
-            q_w = state_dict["encoder.layer.%d.attention.self.query.weight" % i].numpy()
+            q_w = state_dict["encoder.layer.%d.attention.self.query.weight" % i].numpy() ## query -> q
             q_b = state_dict["encoder.layer.%d.attention.self.query.bias" % i].numpy()
-            k_w = state_dict["encoder.layer.%d.attention.self.key.weight" % i].numpy()
+            k_w = state_dict["encoder.layer.%d.attention.self.key.weight" % i].numpy() ##key -> k
             k_b = state_dict["encoder.layer.%d.attention.self.key.bias" % i].numpy()
-            v_w = state_dict["encoder.layer.%d.attention.self.value.weight" % i].numpy()
+            v_w = state_dict["encoder.layer.%d.attention.self.value.weight" % i].numpy() ##value -> v
             v_b = state_dict["encoder.layer.%d.attention.self.value.bias" % i].numpy()
             attention_output_weight = state_dict["encoder.layer.%d.attention.output.dense.weight" % i].numpy()
             attention_output_bias = state_dict["encoder.layer.%d.attention.output.dense.bias" % i].numpy()

@@ -15,7 +15,7 @@ class KMeansClusterer:  # k均值聚类
     def cluster(self):
         result = []
         for i in range(self.cluster_num):
-            result.append([])
+            result.append([])  # 初始化结果列表
         for item in self.ndarray:
             distance_min = sys.maxsize
             index = -1
@@ -23,11 +23,11 @@ class KMeansClusterer:  # k均值聚类
                 distance = self.__distance(item, self.points[i])
                 if distance < distance_min:
                     distance_min = distance
-                    index = i
-            result[index] = result[index] + [item.tolist()]
+                    index = i  # 找到距离最小的中心点
+            result[index] = result[index] + [item.tolist()]  # 将点加入对应的簇
         new_center = []
         for item in result:
-            new_center.append(self.__center(item).tolist())
+            new_center.append(self.__center(item).tolist())  # 计算新的中心点
         # 中心点未改变，说明达到稳态，结束递归
         if (self.points == new_center).all():
             sum = self.__sumdis(result)

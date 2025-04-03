@@ -14,11 +14,17 @@ import matplotlib.pyplot as plt
 """
 
 class LanguageModel(nn.Module):
+     # 初始化函数，接收输入维度和词汇表作为参数
     def __init__(self, input_dim, vocab):
+         # 调用父类的初始化函数
         super(LanguageModel, self).__init__()
+        # 创建一个嵌入层，将词汇表中的每个词映射到一个input_dim维度的向量
         self.embedding = nn.Embedding(len(vocab) + 1, input_dim)
+        # 创建一个RNN层，输入维度为input_dim，输出维度为input_dim，层数为2，batch_first为True
         self.layer = nn.RNN(input_dim, input_dim, num_layers=2, batch_first=True)
+        # 创建一个线性层，将input_dim维度的向量映射到len(vocab) + 1维度的向量
         self.classify = nn.Linear(input_dim, len(vocab) + 1)
+        # 创建一个dropout层，dropout率为0.1
         self.dropout = nn.Dropout(0.1)
         self.loss = nn.functional.cross_entropy
 
@@ -95,21 +101,35 @@ def build_model(vocab, char_dim):
 
 #计算文本ppl
 def calc_perplexity(sentence, model, vocab, window_size):
+    # 计算困惑度
     prob = 0
+    # 将模型设置为评估模式
     model.eval()
+    # 不计算梯度
     with torch.no_grad():
+        # 遍历句子中的每个字符
         for i in range(1, len(sentence)):
+            # 计算窗口的起始位置
             start = max(0, i - window_size)
+            # 获取窗口中的字符
             window = sentence[start:i]
+            # 将窗口中的字符转换为索引
             x = [vocab.get(char, vocab["<UNK>"]) for char in window]
+            # 将索引转换为张量
             x = torch.LongTensor([x])
+            # 获取目标字符的索引
             target = sentence[i]
             target_index = vocab.get(target, vocab["<UNK>"])
+            # 如果有GPU，则将张量移动到GPU上
             if torch.cuda.is_available():
                 x = x.cuda()
+            # 获取模型的预测概率分布
             pred_prob_distribute = model(x)[0]
+            # 获取目标字符的概率
             target_prob = pred_prob_distribute[target_index]
+            # 累加概率的对数
             prob += math.log(target_prob, 10)
+    # 返回困惑度
     return 2 ** (prob * ( -1 / len(sentence)))
 
 

@@ -10,7 +10,7 @@ from collections import defaultdict
 词向量模型的简单实现
 '''
 
-#训练模型
+#训练模型 语料分词形式
 #corpus: [["cat", "say", "meow"], ["dog", "say", "woof"]]
 #corpus: [["今天", "天气", "不错"], ["你", "好", "吗"]]
 #dim指定词向量的维度，如100
@@ -40,9 +40,9 @@ if __name__ == "__main__":
  
     print(model.wv.most_similar(positive=["男人", "母亲"], negative=["女人"])) #类比
 
-    # while True:  #找相似
-    #     string = input("input:")
-    #     try:
-    #         print(model.wv.most_similar(string))
-    #     except KeyError:
-    #         print("输入词不存在")
+    while True:  #找相似
+        string = input("input:")
+        try:
+            print(model.wv.most_similar(string))
+        except KeyError:
+            print("输入词不存在")

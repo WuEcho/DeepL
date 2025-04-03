@@ -114,3 +114,4 @@ Dict = {"经常":0.1,
 根据上方词典，对于输入文本，构造一个存储有所有切分方式的信息字典
 学术叫法为有向无环图，DAG（Directed Acyclic Graph），不理解也不用纠结，只当是个专属名词就好
 
+代码参考：[week4_answer.py](./code/week4_answer.py)

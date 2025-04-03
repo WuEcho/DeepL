@@ -9,8 +9,12 @@ from transformers import BertTokenizer
 模型文件下载 https://huggingface.co/models
 
 '''
+##使用bert必须要搭配bert预训练使用的词表以及分词方式
 
+##加载预训练模型
 # bert = BertModel.from_pretrained(r"F:\Desktop\work_space\pretrain_models\bert-base-chinese", return_dict=False)
+
+#分词器
 tokenizer = BertTokenizer.from_pretrained(r"F:\Desktop\work_space\pretrain_models\bert-base-chinese")
 
 string = "咱呀么老百姓今儿个真高兴"

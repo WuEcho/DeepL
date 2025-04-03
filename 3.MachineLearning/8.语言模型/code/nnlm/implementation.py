@@ -15,6 +15,7 @@ from nnlm import build_model, build_vocab
 """
 
 def load_trained_language_model(path):
+    # 加载训练好的语言模型
     char_dim = 128        #每个字的维度,与训练时保持一直
     window_size = 6       #样本文本长度,与训练时保持一直
     vocab = build_vocab("vocab.txt")      # 加载字表
@@ -29,31 +30,51 @@ def load_trained_language_model(path):
 
 #计算文本ppl
 def calc_perplexity(sentence, model):
+    # 计算困惑度
     prob = 0
+    # 不计算梯度
     with torch.no_grad():
+        # 遍历句子中的每个字符
         for i in range(1, len(sentence)):
+            # 计算窗口大小
             start = max(0, i - model.window_size)
             window = sentence[start:i]
+            # 将窗口中的字符转换为索引
             x = [model.vocab.get(char, model.vocab["<UNK>"]) for char in window]
             x = torch.LongTensor([x])
+            # 获取目标字符的索引
             target = sentence[i]
             target_index = model.vocab.get(target, model.vocab["<UNK>"])
+            # 如果有GPU，则将数据转移到GPU上
             if torch.cuda.is_available():
                 x = x.cuda()
+            # 获取预测的概率分布
             pred_prob_distribute = model(x)[0]
+            # 获取目标字符的概率
             target_prob = pred_prob_distribute[target_index]
+            # 打印窗口、目标字符和概率
             # print(window , "->", target, "prob:", float(target_prob))
+            # 累加概率的对数
             prob += math.log(target_prob, 10)
+    # 返回困惑度
     return 2 ** (prob * ( -1 / len(sentence)))
 
 #加载训练好的所有模型
+# 定义加载模型的函数
 def load_models():
+    # 获取模型文件夹中的所有文件路径
     model_paths = os.listdir(os.path.dirname(os.path.abspath(__file__)) + "/model")
+    # 创建一个空字典，用于存储模型
     class_to_model = {}
+    # 遍历所有文件路径
     for model_path in model_paths:
+        # 获取模型名称
         class_name = model_path.replace(".pth", "")
+        # 获取模型路径
         model_path = os.path.join("model", model_path)
+        # 将模型名称和模型路径存入字典
         class_to_model[class_name] = load_trained_language_model(model_path)
+    # 返回字典
     return class_to_model
 
 #基于语言模型的文本分类伪代码
