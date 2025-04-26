@@ -110,6 +110,7 @@ class KDTree(object):
         """
         m = len(X[0])
         variances = map(lambda j: (
+            # 计算方差
             j, self._get_variance(X, idxs, j)), range(m))
         return max(variances, key=lambda x: x[1])[0]
 
@@ -155,6 +156,7 @@ class KDTree(object):
                 nd.split = (X[idxs[0]], y[idxs[0]])
                 continue
             # Split
+            # 特征选择
             feature = self._choose_feature(X, idxs)
             median_idx = self._get_median_idx(X, idxs, feature)
             idxs_left, idxs_right = self._split_feature(

@@ -32,7 +32,7 @@ def sentences_to_vectors(sentences, model):
     vectors = []
     for sentence in sentences:
         words = sentence.split()  #sentence是分好词的，空格分开
-        vector = np.zeros(model.vector_size)
+        vector = np.zeros(model.vector_size) #初始化一个全0向量
         #所有词的向量相加求平均，作为句子向量
         for word in words:
             try:
@@ -45,7 +45,7 @@ def sentences_to_vectors(sentences, model):
 
 
 def main():
-    model = load_word2vec_model(r"F:\Desktop\work_space\badou\八斗课程\week5 词向量及文本向量\model.w2v") #加载词向量模型
+    model = load_word2vec_model(r"model.w2v") #加载词向量模型
     sentences = load_sentence("titles.txt")  #加载所有标题
     vectors = sentences_to_vectors(sentences, model)   #将所有标题向量化
 

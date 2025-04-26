@@ -4,19 +4,19 @@ from collections import defaultdict
 
 class NgramLanguageModel:
     def __init__(self, corpus=None, n=3):
-        self.n = n
+        self.n = n          # n-gram的阶数（默认3）
         self.sep = "_"     # 用来分割两个词，没有实际含义，只要是字典里不存在的符号都可以
         self.sos = "<sos>"    #start of sentence，句子开始的标识符
         self.eos = "<eos>"    #end of sentence，句子结束的标识符
         self.unk_prob = 1e-5  #给unk分配一个比较小的概率值，避免集外词概率为0
         self.fix_backoff_prob = 0.4  #使用固定的回退概率
-        self.ngram_count_dict = dict((x + 1, defaultdict(int)) for x in range(n))
-        self.ngram_count_prob_dict = dict((x + 1, defaultdict(int)) for x in range(n))
+        self.ngram_count_dict = dict((x + 1, defaultdict(int)) for x in range(n))   # 初始化存储ngram计数的字典（1~n阶）
+        self.ngram_count_prob_dict = dict((x + 1, defaultdict(int)) for x in range(n))    # 初始化存储ngram概率的字典
         self.ngram_count(corpus)
         self.calc_ngram_prob()
 
-    #将文本切分成词或字或token
-    def sentence_segment(self, sentence):
+    #将文本切分成词或字或token 
+    def sentence_segment(self, sentence):                                                      
         return sentence.split()
         #return jieba.lcut(sentence)
 
@@ -42,13 +42,16 @@ class NgramLanguageModel:
         for window_size in range(1, self.n + 1):
             for ngram, count in self.ngram_count_dict[window_size].items():
                 if window_size > 1:
+                     # 分解ngram前缀（如"a_b_c"的前缀是"a_b"）
                     ngram_splits = ngram.split(self.sep)              #ngram        :a b c
                     ngram_prefix = self.sep.join(ngram_splits[:-1])   #ngram_prefix :a b
                     ngram_prefix_count = self.ngram_count_dict[window_size - 1][ngram_prefix] #Count(a,b)
                 else:
+                    # 1-gram的分母是总词数
                     ngram_prefix_count = self.ngram_count_dict[0]     #count(total word)
                 # word = ngram_splits[-1]
                 # self.ngram_count_prob_dict[word + "|" + ngram_prefix] = count / ngram_prefix_count
+                # 计算条件概率 P(word|prefix)
                 self.ngram_count_prob_dict[window_size][ngram] = count / ngram_prefix_count
         return
 
@@ -63,6 +66,7 @@ class NgramLanguageModel:
             return self.unk_prob
         else:
             #高于一阶的可以回退
+            # 截断第一个词（如"a_b_c"回退为"b_c"）
             ngram = self.sep.join(ngram.split(self.sep)[1:])
             return self.fix_backoff_prob * self.get_ngram_prob(ngram)
 
@@ -77,6 +81,7 @@ class NgramLanguageModel:
             prob = self.get_ngram_prob(ngram)
             # print(ngram, prob)
             sentence_prob += math.log(prob)
+         # 计算困惑度公式   
         return 2 ** (sentence_prob * (-1 / len(word_list)))
 
 

@@ -19,8 +19,8 @@ print(l)
 
 
 #对比交叉熵，区别在于交叉熵要求真实值是一个固定类别
-# celoss = nn.CrossEntropyLoss()
-# input = torch.FloatTensor([[0.1,0.2,0.3,0.1,0.3],[0.1,0.2,0.3,0.1,0.3]])
-# target = torch.LongTensor([2,3])
-# output = celoss(input, target)
-# print(output)
+celoss = nn.CrossEntropyLoss()
+input = torch.FloatTensor([[0.1,0.2,0.3,0.1,0.3],[0.1,0.2,0.3,0.1,0.3]])
+target = torch.LongTensor([2,3])
+output = celoss(input, target)
+print(output)

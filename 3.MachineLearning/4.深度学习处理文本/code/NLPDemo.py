@@ -20,7 +20,7 @@ class TorchModel(nn.Module):
         super(TorchModel, self).__init__()
         self.embedding = nn.Embedding(len(vocab), vector_dim, padding_idx=0)  #embedding层
         self.pool = nn.AvgPool1d(sentence_length)   #池化层
-        self.classify = nn.Linear(vector_dim, 1)     #线性层
+        self.classify = nn.Linear(vector_dim, 1)     #线性层 
         self.activation = torch.sigmoid     #sigmoid归一化函数
         self.loss = nn.functional.mse_loss  #loss函数采用均方差损失
 

@@ -66,7 +66,10 @@ def main():
         density_dict[label].append(distance)    #保存下来
     for label, distance_list in density_dict.items():
         density_dict[label] = np.mean(distance_list)   #对于每一类，将类内所有文本到中心的向量余弦值取平均
-    density_order = sorted(density_dict.items(), key=lambda x:x[1], reverse=True)  #按照平均距离排序，向量夹角余弦值越接近1，距离越小
+    density_order = sorted(                         #按照平均距离排序，向量夹角余弦值越接近1，距离越小，越相似 
+                    density_dict.items(),           # 待排序的字典项（键值对列表）
+                    key=lambda x:x[1],              # 按值（平均距离）排序 指定排序依据为元组的第二个元素（即 distance）。
+                    reverse=True)                   # 降序排列（平均距离大的簇靠前）
 
     #按照余弦距离顺序输出
     for label, distance_avg in density_order:

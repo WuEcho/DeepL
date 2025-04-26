@@ -19,7 +19,7 @@ class LanguageModel(nn.Module):
          # 调用父类的初始化函数
         super(LanguageModel, self).__init__()
         # 创建一个嵌入层，将词汇表中的每个词映射到一个input_dim维度的向量
-        self.embedding = nn.Embedding(len(vocab) + 1, input_dim)
+        self.embedding = nn.Embedding(len(vocab) + 1, input_dim) 
         # 创建一个RNN层，输入维度为input_dim，输出维度为input_dim，层数为2，batch_first为True
         self.layer = nn.RNN(input_dim, input_dim, num_layers=2, batch_first=True)
         # 创建一个线性层，将input_dim维度的向量映射到len(vocab) + 1维度的向量
@@ -31,14 +31,26 @@ class LanguageModel(nn.Module):
     #当输入真实标签，返回loss值；无真实标签，返回预测值
     def forward(self, x, y=None):
         x = self.embedding(x)  #output shape:(batch_size, sen_len, input_dim)
-        x, _ = self.layer(x)      #output shape:(batch_size, sen_len, input_dim)
-        x = x[:, -1, :]        #output shape:(batch_size, input_dim)
-        x = self.dropout(x)
+        x, _ = self.layer(x)      #output shape:(batch_size, sen_len, input_dim) 
+        x = x[:, -1, :]        #output shape:(batch_size, input_dim) 
+        x = self.dropout(x) 
         y_pred = self.classify(x)   #output shape:(batch_size, vocab_size)
         if y is not None:
             return self.loss(y_pred, y) #[1*vocab_size] []
         else:
-            return torch.softmax(y_pred, dim=-1)
+            return torch.softmax(y_pred, dim=-1)  # 在最后一个维度上做softmax
+
+# 说明：x = x[:, -1, :]
+# x 的原始形状：(batch_size, sen_len, input_dim)
+# x[:, -1, :] 表示：
+​# 第一个维度：: 保留所有样本（batch_size）
+​# 第二个维度：-1 取最后一个时间步的输出
+​# 第三个维度：: 保留所有特征（input_dim）
+​# 用途：
+# 在RNN处理序列后，每个时间步都会输出一个隐藏状态
+# 取最后一个时间步的输出，是因为它累积了整个序列的上下文信息
+# 适用于需要基于完整序列做预测的任务（如文本分类、语言模型的下一个词预测）#
+
 
 #读取语料获得字符集
 #输出一份
@@ -102,7 +114,7 @@ def build_model(vocab, char_dim):
 #计算文本ppl
 def calc_perplexity(sentence, model, vocab, window_size):
     # 计算困惑度
-    prob = 0
+    prob = 0 
     # 将模型设置为评估模式
     model.eval()
     # 不计算梯度
@@ -110,7 +122,7 @@ def calc_perplexity(sentence, model, vocab, window_size):
         # 遍历句子中的每个字符
         for i in range(1, len(sentence)):
             # 计算窗口的起始位置
-            start = max(0, i - window_size)
+            start = max(0, i - window_size) #防负数
             # 获取窗口中的字符
             window = sentence[start:i]
             # 将窗口中的字符转换为索引
@@ -124,7 +136,7 @@ def calc_perplexity(sentence, model, vocab, window_size):
             if torch.cuda.is_available():
                 x = x.cuda()
             # 获取模型的预测概率分布
-            pred_prob_distribute = model(x)[0]
+            pred_prob_distribute = model(x)[0] #从模型的输出张量中提取当前样本的预测结果
             # 获取目标字符的概率
             target_prob = pred_prob_distribute[target_index]
             # 累加概率的对数

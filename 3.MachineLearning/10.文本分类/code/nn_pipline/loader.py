@@ -14,11 +14,8 @@ from transformers import BertTokenizer
 
 class DataGenerator:
     def __init__(self, data_path, config):
-        # 初始化函数，传入数据路径和配置参数
         self.config = config
-        # 将配置参数赋值给实例变量
         self.path = data_path
-        # 将数据路径赋值给实例变量
         self.index_to_label = {0: '家居', 1: '房产', 2: '股票', 3: '社会', 4: '文化',
                                5: '国际', 6: '教育', 7: '军事', 8: '彩票', 9: '旅游',
                                10: '体育', 11: '科技', 12: '汽车', 13: '健康',

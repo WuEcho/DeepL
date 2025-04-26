@@ -7,8 +7,11 @@ import time
 def load_word_dict(path):
     max_word_length = 0
     word_dict = {}  #用set也是可以的。用list会很慢
+    #打开文件 "r"是读取模式，"utf8"是编码格式
+    #with 方式打开文件，自动关闭文件
     with open(path, encoding="utf8") as f:
         for line in f:
+            #将每行文本按空白字符（空格、制表符等）分割成列表，并取第一个元素作为单词
             word = line.split()[0]
             word_dict[word] = 0
             max_word_length = max(max_word_length, len(word))

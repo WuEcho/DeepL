@@ -40,11 +40,38 @@ class KMeansClusterer:  # k均值聚类
         sum=0
         for i in range(len(self.points)):
             for j in range(len(result[i])):
+                # 计算每个点到中心的距离
+                # 这里的result[i]是一个簇
+                # result[i][j]是簇中的一个点
+                # self.points[i]是对应的中心
+                # sum 是所有数据点到其所属簇中心的距离总和，用于衡量聚类的紧密度（总和越小，聚类效果越好）
                 sum+=self.__distance(result[i][j],self.points[i])
         return sum
 
     def __center(self, list):
         # 计算每一列的平均值
+        #  axis 表示对哪个维度进行操作
+        # 0表示对行进行操作，1表示对列进行操作
+        # 这里对每一列进行操作，计算平均值
+        # 这里的list是一个二维数组
+        # 示例：
+        # data = [
+        # [1, 2],  # 数据点1
+        # [3, 4],  # 数据点2
+        # [5, 6]   # 数据点3
+        # ]
+        ​# axis=0：计算每列的均值（跨所有数据点的同一特征）：
+        # np.mean(data, axis=0)  # 结果: [3.0, 4.0]
+        # 第一列均值：(1 + 3 + 5) / 3 = 3.0
+        # 第二列均值：(2 + 4 + 6) / 3 = 4.0
+
+        # 在K-means中的意义：
+        # 簇中心是所有数据点各特征的平均值。例如：
+        # 若簇中有3个数据点，每个点有2个特征（如坐标[x, y]），则中心应为：
+        # center_x = (x1 + x2 + x3) / 3
+        # center_y = (y1 + y2 + y3) / 3
+        # 中心 = [center_x, center_y]
+        # 这正是axis=0的作用：对每个特征（列）单独求均值
         return np.array(list).mean(axis=0)
 
     def __distance(self, p1, p2):
@@ -70,3 +97,4 @@ result, centers, distances = kmeans.cluster()
 print(result)
 print(centers)
 print(distances)
+

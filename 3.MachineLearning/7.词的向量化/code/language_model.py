@@ -18,13 +18,9 @@ class LanguageModel(nn.Module):
         super(LanguageModel, self).__init__()
         # 调用父类的初始化函数
         self.word_vectors = nn.Embedding(vocab_size, embedding_size)
-        # 定义嵌入层，将词汇表中的词转换为嵌入向量
         self.inner_projection_layer = nn.Linear(embedding_size * max_len, hidden_size)
-        # 定义内层投影层，将嵌入向量转换为隐藏层大小
         self.outter_projection_layer = nn.Linear(hidden_size, hidden_size)
-        # 定义外层投影层，将隐藏层大小转换为隐藏层大小
         self.x_projection_layer = nn.Linear(embedding_size * max_len, hidden_size)
-        # 定义x投影层，将嵌入向量转换为隐藏层大小
         self.projection_layer = nn.Linear(hidden_size, vocab_size)
 
     def forward(self, context):

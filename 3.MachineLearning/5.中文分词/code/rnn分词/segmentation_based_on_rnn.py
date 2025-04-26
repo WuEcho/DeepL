@@ -20,7 +20,6 @@ class TorchModel(nn.Module):
         super(TorchModel, self).__init__()
         #embedding层，将输入的词汇转换为向量表示，padding_idx=0表示忽略索引为0的词汇
         self.embedding = nn.Embedding(len(vocab) + 1, input_dim, padding_idx=0) #shape=(vocab_size, dim)
-        #embedding层，将输入的词汇转换为向量表示，padding_idx=0表示忽略索引为0的词汇
         self.rnn_layer = nn.RNN(input_size=input_dim,
                             hidden_size=hidden_size,
                             batch_first=True,

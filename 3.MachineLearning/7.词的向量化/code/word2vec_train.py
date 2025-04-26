@@ -15,6 +15,7 @@ from collections import defaultdict
 #corpus: [["今天", "天气", "不错"], ["你", "好", "吗"]]
 #dim指定词向量的维度，如100
 def train_word2vec_model(corpus, dim):
+    # sg=1表示使用skip-gram模型，sg=0表示使用CBOW模型
     model = Word2Vec(corpus, vector_size=dim, sg=1)
     model.save("model.w2v")
     return model
@@ -37,7 +38,10 @@ if __name__ == "__main__":
     model = main()  #训练
 
     model = load_word2vec_model("model.w2v")  #加载
- 
+    # ​输入：
+    #positive=["男人", "母亲"]：将这两个词的向量相加。
+    #negative=["女人"]：从上述结果中减去该词的向量。
+    #​输出：找到与最终向量最接近的词语（即完成语义类比）。
     print(model.wv.most_similar(positive=["男人", "母亲"], negative=["女人"])) #类比
 
     while True:  #找相似
