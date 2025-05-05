@@ -61,7 +61,9 @@ class QASystem:
 
     # 将文本向量化
     def sentence_to_vec(self, sentence):
-        vector = np.zeros(self.w2v_model.vector_size)
+         #这里的初始化有几个作用 1：零初始化确保初始向量与模型的维度一致，避免后续操作出现维度错误。
+         # 2.若直接取第一个词的向量初始化，当第一个词不存在于模型时，vector会未定义，导致错误。
+        vector = np.zeros(self.w2v_model.vector_size) 
         words = jieba.lcut(sentence)
         # 所有词的向量相加求平均，作为句子向量
         count = 0
@@ -71,6 +73,9 @@ class QASystem:
                 vector += self.w2v_model.wv[word]
         vector = np.array(vector) / count
         #文本向量做l2归一化，方便计算cos距离
+        # ​L2归一化：此操作将向量除以其L2范数（即向量各元素平方和的平方根），使向量变为单位向量（长度为1）。
+        # ​简化相似度计算：余弦相似度的计算公式为两向量的点积除以L2范数的乘积。归一化后，点积直接等于余弦相似度，计算更高效。
+        #​ 数值稳定性：归一化可避免长向量在计算中占据过大权重，提升模型鲁棒性
         vector = vector / np.sqrt(np.sum(np.square(vector)))
         return vector
 
@@ -100,13 +105,28 @@ class QASystem:
             words = jieba.lcut(user_query)
             results = self.bm25_model.get_scores(words)
         elif self.algo == "word2vec":
+            #这个地方需要注意一下
             query_vector = self.sentence_to_vec(user_query)
             for target, vectors in self.target_to_vectors.items():
+                # 如果向量已经归一化（长度为1），​点积（dot product）等于余弦相似度。
+                # vectors 是一个二维数组，形状为 (n_questions, vector_size)（例如 10 个问题，每个问题向量是 100 维）。
+                # vectors.transpose() 转置后形状为 (vector_size, n_questions)。
+                # query_vector 的形状是 (vector_size,)。
+                # query_vector.dot(vectors.transpose()) 的结果是一个一维数组，形状为 (n_questions,)，表示用户查询与目标下每个问题的相似度。
                 cos = query_vector.dot(vectors.transpose())
                 # print(cos)
+                # 对目标下所有问题的相似度取平均值（np.mean(cos)），代表该目标与用户查询的整体匹配程度
                 results.append([target, np.mean(cos)])
         else:
             assert "unknown algorithm!!"
+        # 这段代码的作用是将列表 results 中的元素按照每个元素的第二个值（通常是分数或相似度）从高到低进行排序。具体解释如下：
+        # ​**sorted(results, ...)**
+        # 使用 Python 内置的 sorted() 函数对列表 results 进行排序，返回一个新的排序后的列表，原列表 results 保持不变。
+        # ​**key=lambda x: x[1]**
+        #l ambda x: x[1] 是一个匿名函数，表示取每个元素（x）的第二个值（索引为 1）作为排序依据。
+        # 假设 results 的每个元素是形如 [目标, 分数] 的列表或元组（例如 ["流量套餐", 0.8]），则 x[1] 对应分数值。
+        ​# **reverse=True**
+        # 表示降序排序（从大到小）。分数高的元素会排在前面。
         sort_results = sorted(results, key=lambda x:x[1], reverse=True)
         return sort_results[:3]
 
