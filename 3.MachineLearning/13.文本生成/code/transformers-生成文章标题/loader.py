@@ -55,8 +55,8 @@ class DataGenerator:
 
     #输入输出转化成序列
     def prepare_data(self, title, content):
-        input_seq = self.encode_sentence(content, self.config["input_max_length"], False, False) #输入序列
-        output_seq = self.encode_sentence(title, self.config["output_max_length"], True, False) #输出序列
+        input_seq = self.encode_sentence(content, self.config["input_max_length"], False, False) #输入序列 此处的False，False 表示的是句子起始和末尾是否需要加token 
+        output_seq = self.encode_sentence(title, self.config["output_max_length"], True, False) #输出序列 此处的True,False表示句子起始位置需要加起始符，末尾不需要加 需要加起始符是因为decoder的输入需要有起始符
 
         gold = self.encode_sentence(title, self.config["output_max_length"], False, True) #不进入模型，用于计算loss
 
