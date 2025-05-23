@@ -6,38 +6,38 @@
 
 ## 1.Transformer各个模块的作用
 
-### （1）Encoder模块&#x20;
+### （1）Encoder模块
 
-- 经典的Transformer架构中的Encoder模块包含6个Encoder Block. &#x20;
-- 每个Encoder Block包含两个⼦模块, 分别是多头⾃注意⼒层, 和前馈全连接层. &#x20;
-  - 多头⾃注意⼒层采⽤的是⼀种Scaled Dot-Product Attention的计算⽅式, 实验结果表  明, Multi-head可以在更细致的层⾯上提取不同head的特征, ⽐单⼀head提取特征的  效果更佳. &#x20;
-  - 前馈全连接层是由两个全连接层组成, 线性变换中间增添⼀个Relu激活函数, 具体的 维度采⽤4倍关系, 即多头⾃注意⼒的d\_model=512, 则层内的变换维度d\_ff=2048. &#x20;
+- 经典的Transformer架构中的Encoder模块包含6个Encoder Block. 
+- 每个Encoder Block包含两个⼦模块, 分别是多头⾃注意⼒层, 和前馈全连接层. 
+  - 多头⾃注意⼒层采⽤的是⼀种Scaled Dot-Product Attention的计算⽅式, 实验结果表  明, Multi-head可以在更细致的层⾯上提取不同head的特征, ⽐单⼀head提取特征的  效果更佳.
+  - 前馈全连接层是由两个全连接层组成, 线性变换中间增添⼀个Relu激活函数, 具体的 维度采⽤4倍关系, 即多头⾃注意⼒的d\_model=512, 则层内的变换维度d\_ff=2048. 
 
-### （2）Decoder模块 &#x20;
+### （2）Decoder模块
 
 - 经典的Transformer架构中的Decoder模块包含6个Decoder Block. &#x20;
-- 每个Decoder Block包含3个⼦模块, 分别是多头⾃注意⼒层, Encoder-Decoder Attention  层, 和前馈全连接层. &#x20;
-  - 多头⾃注意⼒层采⽤和Encoder模块⼀样的Scaled Dot-Product Attention的计算⽅  式, 最⼤的 区别在于**需要添加look-ahead-mask,** 即遮掩"未来的信息". &#x20;
-  - Encoder-Decoder Attention层和上⼀层多头⾃注意⼒层最主要的区别在于Q != K = V,  矩阵Q来源于上⼀层Decoder Block的输出, 同时K, V来源于Encoder端的输出. &#x20;
-  - 前馈全连接层和Encoder中完全⼀样. &#x20;
+- 每个Decoder Block包含3个⼦模块, 分别是多头⾃注意⼒层, Encoder-Decoder Attention  层, 和前馈全连接层. 
+  - 多头⾃注意⼒层采⽤和Encoder模块⼀样的Scaled Dot-Product Attention的计算⽅  式, 最⼤的 区别在于**需要添加look-ahead-mask,** 即遮掩"未来的信息". 
+  - Encoder-Decoder Attention层和上⼀层多头⾃注意⼒层最主要的区别在于Q != K = V,  矩阵Q来源于上⼀层Decoder Block的输出, 同时K, V来源于Encoder端的输出. 
+  - 前馈全连接层和Encoder中完全⼀样. 
 
-### （3）Add & Norm模块 &#x20;
+### （3）Add & Norm模块
 
-- Add & Norm模块接在每⼀个Encoder Block和Decoder Block中的每⼀个⼦层的后⾯. &#x20;
-- 对于每⼀个Encoder Block, ⾥⾯的两个⼦层后⾯都有Add & Norm. &#x20;
-- 对于每⼀个Decoder Block, ⾥⾯的三个⼦层后⾯都有Add & Norm. &#x20;
-- Add表示残差连接, 作⽤是为了将信息⽆损耗的传递的更深, 来增强模型的拟合能⼒. &#x20;
-- Norm表示LayerNorm, 层级别的数值标准化操作, 作⽤是防⽌参数过⼤过⼩导致的学习过程异常 , 模型收敛特别慢的问题. &#x20;
+- Add & Norm模块接在每⼀个Encoder Block和Decoder Block中的每⼀个⼦层的后⾯. ;
+- 对于每⼀个Encoder Block, ⾥⾯的两个⼦层后⾯都有Add & Norm. 
+- 对于每⼀个Decoder Block, ⾥⾯的三个⼦层后⾯都有Add & Norm.
+- Add表示残差连接, 作⽤是为了将信息⽆损耗的传递的更深, 来增强模型的拟合能⼒.
+- Norm表示LayerNorm, 层级别的数值标准化操作, 作⽤是防⽌参数过⼤过⼩导致的学习过程异常 , 模型收敛特别慢的问题. 
 
-### （4）位置编码器Positional Encoding &#x20;
+### （4）位置编码器Positional Encoding
 
-- Transformer中采⽤三⻆函数来计算位置编码. &#x20;
+- Transformer中采⽤三⻆函数来计算位置编码.
 - 因为三⻆函数是周期性函数, 不受序列⻓度的限制, ⽽且这种计算⽅式可以对序列中不同位置的编码的重要程度同等看待
 
 ## 2.Decoder端训练和预测的输入
 
 1. 在Transformer结构中的Decoder模块的输⼊, 区分于不同的Block, 最底层的Block输⼊有其特殊的地⽅。第⼆层到第六层的输⼊⼀致, 都是上⼀层的输出和Encoder的输出。
-2. 最底层的Block在**训练阶段**, 每⼀个time step的输⼊是上⼀个time step的输⼊加上真实标  签序列向后移⼀位. 具体来看, 就是每⼀个time step的输⼊序列会越来越⻓, 不断的将之前的  输⼊融合进来. &#x20;
+2. 最底层的Block在**训练阶段**, 每⼀个time step的输⼊是上⼀个time step的输⼊加上真实标  签序列向后移⼀位. 具体来看, 就是每⼀个time step的输⼊序列会越来越⻓, 不断的将之前的  输⼊融合进来. 
    ```text
    假设现在的真实标签序列等于"How are you?", 
    当time step=1时, 输⼊张量为⼀个特殊的token, ⽐如"SOS"; 
@@ -45,7 +45,7 @@
    当time step=3时, 输⼊张量为"SOS How are";
    以此类推...
    ```
-3. 最底层的Block在**训练阶段**, 真实的代码实现中, 采⽤的是MASK机制来模拟输⼊序列不断添  加的过程. &#x20;
+3. 最底层的Block在**训练阶段**, 真实的代码实现中, 采⽤的是MASK机制来模拟输⼊序列不断添  加的过程. 
 4. 最底层的Block在**预测阶段**, 每⼀个time step的输⼊是从time step=0开始, ⼀直到上⼀个  time step的预测值的累积拼接张量. 具体来看, 也是随着每⼀个time step的输⼊序列会越来越长. 相⽐于训练阶段最⼤的不同是这⾥不断拼接进来的token是每⼀个time step的预测值,  ⽽不是训练阶段每⼀个time step取得的groud truth值
    ```纯文本
    当time step=1时, 输⼊的input_tensor="SOS", 预测出来的输出值是output_tensor="What";
@@ -59,25 +59,25 @@
 
 ## 3.Self-attention
 
-> Transformer中⼀直强调的self-attention是什么? 为什么能  发挥如此⼤的作⽤? 计算的时候如果不使⽤三元组(Q, K, V), ⽽  仅仅使⽤(Q, V)或者(K, V)或者(V)⾏不⾏?
+> Transformer中⼀直强调的self-attention是什么? 为什么能发挥如此⼤的作⽤? 计算的时候如果不使⽤三元组(Q, K, V), ⽽  仅仅使⽤(Q, V)或者(K, V)或者(V)⾏不⾏?
 
 ### （1）self-attention的机制和原理
 
-self-attention是⼀种通过⾃身和⾃身进⾏关联的attention机制, 从⽽得到更好的  representation来表达⾃身. &#x20;
+self-attention是⼀种通过⾃身和⾃身进⾏关联的attention机制, 从⽽得到更好的representation来表达⾃身. 
 
-self-attention是attention机制的⼀种特殊情况:  在self-attention中, Q=K=V, **序列中的每个单词(token)都和该序列中的其他所有单词 (token)进⾏attention规则的计算.** &#x20;
+self-attention是attention机制的⼀种特殊情况:  在self-attention中, Q=K=V, **序列中的每个单词(token)都和该序列中的其他所有单词 (token)进⾏attention规则的计算.** 
 
 attention机制计算的特点在于, 可以**直接跨越⼀句话中不同距离的token, 可以远距离的学习到序列的知识依赖和语序结构.**
 
 ![](image/image_M3kWTuKKV3.png)
 
-- 从上图中可以看到, self-attention可以远距离的捕捉到语义层⾯的特征(it的指代对象是  animal). &#x20;
-- 应⽤传统的RNN, LSTM, 在获取⻓距离语义特征和结构特征的时候, **需要按照序列顺序依次  计算, 距离越远的联系信息的损耗越⼤, 有效提取和捕获的可能性越⼩.** &#x20;
+- 从上图中可以看到, self-attention可以远距离的捕捉到语义层⾯的特征(it的指代对象是  animal). 
+- 应⽤传统的RNN, LSTM, 在获取⻓距离语义特征和结构特征的时候, **需要按照序列顺序依次  计算, 距离越远的联系信息的损耗越⼤, 有效提取和捕获的可能性越⼩.**
 - 但是应⽤self-attention时, 计算过程中会直接将句⼦中任意两个token的联系通过⼀个计算  步骤直接联系起来,
 
 ### （2）关于self-attention为什么要使⽤(Q, K, V)三元组⽽不是其他形式
 
-⾸先⼀条就是从分析的⻆度看, 查询Query是⼀条独⽴的序列信息, 通过关键词Key的提示作⽤, 得到最终语义的真实值Value表达, 数学意义更充分, 完备. &#x20;
+⾸先⼀条就是从分析的⻆度看, 查询Query是⼀条独⽴的序列信息, 通过关键词Key的提示作⽤, 得到最终语义的真实值Value表达, 数学意义更充分, 完备. 
 
 这⾥不使用(K, V)或者(V)没有什么必须的理由, 也没有相关的论⽂来严格阐述⽐较试验的结果差异, 所以可以作为开放性问题未来去探索, 只要明确在经典self-attention实现中⽤的是三元组就好
 
@@ -85,13 +85,13 @@ attention机制计算的特点在于, 可以**直接跨越⼀句话中不同距�
 
 ### （1）self-attention中的归⼀化概述
 
-**训练上的意义**：随着词嵌⼊维度d\_k的增⼤, q \* k 点积后的结果也会增⼤, 在训练时会将  softmax函数推入梯度⾮常⼩的区域, 可能出现梯度消失的现象, 造成模型收敛困难. &#x20;
+**训练上的意义**：随着词嵌⼊维度d\_k的增⼤, q \* k 点积后的结果也会增⼤, 在训练时会将  softmax函数推入梯度⾮常⼩的区域, 可能出现梯度消失的现象, 造成模型收敛困难. 
 
-**数学上的意义**: 假设q和k的统计变量是满⾜标准正态分布的独⽴随机变量, 意味着q和k满⾜均  值为0, ⽅差为1。\*\* 那么q和k的点积结果就是均值为0, ⽅差为\*\*$d_k$**, 为了抵消这种⽅差被放⼤**$d_k$\*\*  倍的影响, 在计算中主动将点积缩放\*\*​$\frac{1}{\sqrt(d_k)}$, 这样点积后的结果依然满⾜均值为0, ⽅差为  1。
+**数学上的意义**: 假设q和k的统计变量是满⾜标准正态分布的独⽴随机变量, 意味着q和k满⾜均  值为0, ⽅差为1。\*\* 那么q和k的点积结果就是均值为0, ⽅差为\*\*$d_k$**, 为了抵消这种⽅差被放⼤**$d_k$\*\*  倍的影响, 在计算中主动将点积缩放\*\*​$\frac{1}{\sqrt(d_k)}$, 这样点积后的结果依然满⾜均值为0, ⽅差为 1。
 
 ### （2）softmax的梯度变化
 
-这⾥我们分3个步骤来解释softmax的梯度问题: &#x20;
+这⾥我们分3个步骤来解释softmax的梯度问题: 
 
 #### 第⼀步: softmax函数的输⼊分布是如何影响输出的
 
