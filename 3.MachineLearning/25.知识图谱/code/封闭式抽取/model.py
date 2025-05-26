@@ -22,6 +22,7 @@ class TorchModel(nn.Module):
         self.loss = torch.nn.CrossEntropyLoss(ignore_index=-100)  #loss采用交叉熵损失
 
     #当输入真实标签，返回loss值；无真实标签，返回预测值
+    #                     attribute_target 关系  bio_target 实体
     def forward(self, x, attribute_target=None, bio_target=None):
         x = self.embedding(x)
         x, _ = self.layer(x)  #(batch_size, max_length, hidden_size)
@@ -35,7 +36,10 @@ class TorchModel(nn.Module):
         if bio_target is not None:
             bio_loss = self.loss(bio_predict.view(-1, bio_predict.shape[-1]), bio_target.view(-1))
             attribute_loss = self.loss(attribute_predict.view(x.shape[0], -1), attribute_target.view(-1))
-            return bio_loss + attribute_loss * self.attribute_loss_ratio
+            return bio_loss + attribute_loss * self.attribute_loss_ratio ## self.attribute_loss_ratio值的作用是缩小实体识别的损失函数
+                                                                         # (因为命名实体识别任务相对来说好训练一些因此会带动着损失整体下降)
+                                                                         # 为了防止出现一个任务训练充分另一个任务训练的不够充分的情况需要让attribute_loss_ratio的值在
+                                                                         # 0~1之间
         else:
             return attribute_predict, bio_predict
 
